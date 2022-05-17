@@ -2,12 +2,18 @@ package task
 
 import (
 	"log"
+	"time"
 )
 
 type Task struct {
-	Name        string `json:"name"`
-	IsUrgent    bool   `json:"isUrgent"`
-	IsImportant bool   `json:"isImportant"`
+	Name        string    `json:"name"`
+	IsUrgent    bool      `json:"isUrgent"`
+	IsImportant bool      `json:"isImportant"`
+	Deadline    time.Time `json:"deadline"`
+}
+
+func (t *Task) IsOverdue() bool {
+	return time.Now().After(t.Deadline)
 }
 
 var (
@@ -26,4 +32,52 @@ func List() []Task {
 		log.Fatalf("Failed to list tasks with err: %s", err)
 	}
 	return tasks
+}
+
+func FilterImportant(tasks []Task) []Task {
+	importantTasks := make([]Task, 0)
+
+	for _, t := range tasks {
+		if t.IsImportant {
+			importantTasks = append(importantTasks, t)
+		}
+	}
+
+	return importantTasks
+}
+
+func FilterUrgent(tasks []Task) []Task {
+	importantTasks := make([]Task, 0)
+
+	for _, t := range tasks {
+		if t.IsUrgent {
+			importantTasks = append(importantTasks, t)
+		}
+	}
+
+	return importantTasks
+}
+
+func FilterNotImportant(tasks []Task) []Task {
+	importantTasks := make([]Task, 0)
+
+	for _, t := range tasks {
+		if !t.IsImportant {
+			importantTasks = append(importantTasks, t)
+		}
+	}
+
+	return importantTasks
+}
+
+func FilterNotUrgent(tasks []Task) []Task {
+	importantTasks := make([]Task, 0)
+
+	for _, t := range tasks {
+		if !t.IsUrgent {
+			importantTasks = append(importantTasks, t)
+		}
+	}
+
+	return importantTasks
 }
